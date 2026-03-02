@@ -2,6 +2,7 @@
 Módulo de segurança da aplicação.
 
 """
+
 import re
 
 from app.core.config import settings
@@ -12,9 +13,9 @@ logger = get_logger(__name__)
 
 # ── Padrões de chaves que NUNCA devem aparecer em logs ou respostas ───────────
 _SENSITIVE_PATTERNS = [
-    re.compile(r"gsk_[a-zA-Z0-9]{40,}"),        # Groq API Key
-    re.compile(r"sk-[a-zA-Z0-9]{40,}"),          # OpenAI API Key
-    re.compile(r"Bearer\s+[a-zA-Z0-9\-_.]{20,}"), # Bearer tokens
+    re.compile(r"gsk_[a-zA-Z0-9]{40,}"),  # Groq API Key
+    re.compile(r"sk-[a-zA-Z0-9]{40,}"),  # OpenAI API Key
+    re.compile(r"Bearer\s+[a-zA-Z0-9\-_.]{20,}"),  # Bearer tokens
 ]
 
 

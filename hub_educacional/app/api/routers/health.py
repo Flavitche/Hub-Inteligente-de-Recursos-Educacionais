@@ -2,13 +2,14 @@
 Endpoint de saúde da aplicação.
 Verifica conectividade com banco de dados e estado geral da API.
 """
+
 import time
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends
+from pydantic import BaseModel
 from sqlalchemy import text
 from sqlalchemy.orm import Session
-from pydantic import BaseModel
 
 from app.core.config import settings
 from app.core.logging import get_logger

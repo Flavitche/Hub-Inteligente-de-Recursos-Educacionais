@@ -7,6 +7,7 @@ Separação clara de responsabilidades:
 - ResourceResponse: shape de saída da API
 - PaginatedResponse: wrapper genérico para listagens paginadas
 """
+
 from datetime import datetime
 from enum import Enum
 from typing import Generic, List, Optional, TypeVar
@@ -53,6 +54,7 @@ class ResourceBase(BaseModel):
 # ── Create ─────────────────────────────────────────────────────────────────────
 class ResourceCreate(ResourceBase):
     """Payload de criação de recurso. Todos os campos base são obrigatórios."""
+
     pass
 
 
@@ -62,6 +64,7 @@ class ResourceUpdate(BaseModel):
     Payload de atualização parcial (PATCH).
     Todos os campos são opcionais — apenas os enviados são alterados.
     """
+
     title: Optional[str] = Field(None, min_length=3, max_length=255)
     description: Optional[str] = Field(None, max_length=5000)
     type: Optional[ResourceType] = None
@@ -90,6 +93,7 @@ class ResourceUpdate(BaseModel):
 # ── Response ───────────────────────────────────────────────────────────────────
 class ResourceResponse(ResourceBase):
     """Shape de resposta da API — inclui campos gerados pelo servidor."""
+
     model_config = ConfigDict(from_attributes=True)
 
     id: int
@@ -109,7 +113,9 @@ class PaginatedResponse(BaseModel, Generic[T]):
     total_pages: int
 
     @classmethod
-    def create(cls, items: List[T], total: int, page: int, page_size: int) -> "PaginatedResponse[T]":
+    def create(
+        cls, items: List[T], total: int, page: int, page_size: int
+    ) -> "PaginatedResponse[T]":
         total_pages = max(1, -(-total // page_size))  # ceiling division
         return cls(
             items=items,

@@ -7,6 +7,7 @@ Responsabilidades:
 - Tratamento de erros de domínio
 - Nunca acessa HTTP diretamente — puro Python/SQLAlchemy
 """
+
 from datetime import datetime, timezone
 from typing import List, Optional, Tuple
 
@@ -73,9 +74,7 @@ class ResourceService:
 
         if search:
             pattern = f"%{search}%"
-            stmt = stmt.where(
-                Resource.title.ilike(pattern) | Resource.description.ilike(pattern)
-            )
+            stmt = stmt.where(Resource.title.ilike(pattern) | Resource.description.ilike(pattern))
 
         if tag_filter:
             # Busca por substring no JSON de tags (compatível com SQLite e PostgreSQL)
@@ -96,7 +95,9 @@ class ResourceService:
 
         update_data = payload.model_dump(exclude_unset=True)
         if not update_data:
-            logger.warning("Update chamado sem campos para alterar", extra={"resource_id": resource_id})
+            logger.warning(
+                "Update chamado sem campos para alterar", extra={"resource_id": resource_id}
+            )
             return resource
 
         for field, value in update_data.items():

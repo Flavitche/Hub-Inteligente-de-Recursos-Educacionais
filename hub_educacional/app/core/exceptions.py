@@ -2,6 +2,7 @@
 Exceções de domínio da aplicação.
 Centralizar aqui facilita tratamento consistente em toda a API.
 """
+
 from typing import Any, Dict, Optional
 
 

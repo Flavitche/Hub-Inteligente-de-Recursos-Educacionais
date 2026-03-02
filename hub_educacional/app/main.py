@@ -2,7 +2,7 @@
 Hub Inteligente de Recursos Educacionais
 Entry point da aplicação FastAPI.
 """
-from app.core.security import validate_api_key_safety
+
 import time
 from contextlib import asynccontextmanager
 
@@ -10,10 +10,11 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from app.api.routers import resources, ai, health
+from app.api.routers import ai, health, resources
 from app.core.config import settings
 from app.core.logging import get_logger
-from app.db.session import engine, Base
+from app.core.security import validate_api_key_safety
+from app.db.session import Base, engine
 
 logger = get_logger(__name__)
 
@@ -21,7 +22,9 @@ logger = get_logger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Gerencia ciclo de vida da aplicação."""
-    logger.info("🚀 Iniciando Hub Inteligente de Recursos Educacionais", extra={"env": settings.ENVIRONMENT})
+    logger.info(
+        "🚀 Iniciando Hub Inteligente de Recursos Educacionais", extra={"env": settings.ENVIRONMENT}
+    )
     validate_api_key_safety()
     Base.metadata.create_all(bind=engine)
     logger.info("✅ Banco de dados inicializado com sucesso")
@@ -74,7 +77,7 @@ app.include_router(resources.router, prefix="/resources", tags=["Recursos"])
 app.include_router(ai.router, prefix="/ai", tags=["Inteligência Artificial"])
 
 
-#  Exception handlers 
+#  Exception handlers
 @app.exception_handler(Exception)
 async def unhandled_exception_handler(request: Request, exc: Exception):
     logger.exception("Unhandled exception", extra={"path": request.url.path})

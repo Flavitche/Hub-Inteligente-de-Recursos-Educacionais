@@ -8,6 +8,7 @@ Endpoints:
   PATCH  /resources/{id}       - Atualizar parcialmente
   DELETE /resources/{id}       - Deletar
 """
+
 from typing import Annotated, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -27,8 +28,10 @@ from app.services.resource_service import ResourceService
 
 router = APIRouter()
 
+
 def get_resource_service(db: Session = Depends(get_db)) -> ResourceService:
     return ResourceService(db)
+
 
 ServiceDep = Annotated[ResourceService, Depends(get_resource_service)]
 

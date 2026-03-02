@@ -2,6 +2,7 @@
 Serviço de integração com a API Groq (LLM).
 Usa recursos modernos do Python: dataclasses, decorators, type hints avançados.
 """
+
 import functools
 import json
 import re
@@ -22,10 +23,11 @@ logger = get_logger(__name__)
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 
-# Dataclass pra representar o resultado bruto da Groq 
+# Dataclass pra representar o resultado bruto da Groq
 @dataclass(frozen=True, slots=True)
 class GroqRawResult:
     """Resultado bruto e imutável retornado pela API Groq."""
+
     content: str
     prompt_tokens: int
     completion_tokens: int
@@ -38,10 +40,11 @@ class GroqRawResult:
         return round(self.latency_ms / 1000, 2)
 
 
-# Dataclass para contexto de tipo do recurso 
+# Dataclass para contexto de tipo do recurso
 @dataclass(frozen=True, slots=True)
 class ResourceTypeContext:
     """Contexto pedagógico enriquecido por tipo de recurso."""
+
     label: str
     learning_style: str
     best_for: str
@@ -66,12 +69,13 @@ RESOURCE_TYPE_CONTEXTS: Dict[str, ResourceTypeContext] = {
 }
 
 
-# Decorator de logging de performance 
+# Decorator de logging de performance
 def log_ai_call(func: Callable) -> Callable:
     """
     Decorator moderno que loga automaticamente início, fim e erros
     de qualquer chamada assíncrona à IA.
     """
+
     @functools.wraps(func)
     async def wrapper(self, request: AIGenerateRequest, *args, **kwargs):
         logger.info(
@@ -95,6 +99,7 @@ def log_ai_call(func: Callable) -> Callable:
                 extra={"title": request.title, "latency_s": elapsed, "error": str(exc)},
             )
             raise
+
     return wrapper
 
 
@@ -154,7 +159,9 @@ def _build_user_message(request: AIGenerateRequest) -> str:
     """Constrói mensagem enriquecida com contexto pedagógico do tipo de recurso."""
     ctx = RESOURCE_TYPE_CONTEXTS.get(
         request.type.value,
-        ResourceTypeContext(label=request.type.value, learning_style="geral", best_for="aprendizado"),
+        ResourceTypeContext(
+            label=request.type.value, learning_style="geral", best_for="aprendizado"
+        ),
     )
     return (
         f"Gere a descrição pedagógica e as tags para o seguinte recurso educacional:\n\n"

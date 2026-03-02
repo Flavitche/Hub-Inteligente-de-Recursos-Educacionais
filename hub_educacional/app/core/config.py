@@ -2,6 +2,7 @@
 Configurações centralizadas da aplicação via variáveis de ambiente.
 Nunca hardcode credenciais — use .env ou variáveis de ambiente reais.
 """
+
 from functools import lru_cache
 from typing import List
 

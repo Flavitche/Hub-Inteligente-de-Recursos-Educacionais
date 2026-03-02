@@ -2,6 +2,7 @@
 Logging estruturado com formato JSON para ambientes de produção
 e formato legível para desenvolvimento.
 """
+
 import logging
 import sys
 from datetime import datetime, timezone
@@ -24,10 +25,27 @@ class StructuredFormatter(logging.Formatter):
 
         # Adiciona campos extras (passados via extra={})
         standard_attrs = {
-            "name", "msg", "args", "levelname", "levelno", "pathname",
-            "filename", "module", "exc_info", "exc_text", "stack_info",
-            "lineno", "funcName", "created", "msecs", "relativeCreated",
-            "thread", "threadName", "processName", "process", "message",
+            "name",
+            "msg",
+            "args",
+            "levelname",
+            "levelno",
+            "pathname",
+            "filename",
+            "module",
+            "exc_info",
+            "exc_text",
+            "stack_info",
+            "lineno",
+            "funcName",
+            "created",
+            "msecs",
+            "relativeCreated",
+            "thread",
+            "threadName",
+            "processName",
+            "process",
+            "message",
             "taskName",
         }
         for key, value in record.__dict__.items():
@@ -55,14 +73,33 @@ class PrettyFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
         color = self.COLORS.get(record.levelname, self.RESET)
         ts = datetime.now(tz=timezone.utc).strftime("%H:%M:%S")
-        base = f"{color}[{ts}] {record.levelname:<8}{self.RESET} {record.name} | {record.getMessage()}"
+        base = (
+            f"{color}[{ts}] {record.levelname:<8}{self.RESET} {record.name} | {record.getMessage()}"
+        )
 
         extras = {}
         standard_attrs = {
-            "name", "msg", "args", "levelname", "levelno", "pathname",
-            "filename", "module", "exc_info", "exc_text", "stack_info",
-            "lineno", "funcName", "created", "msecs", "relativeCreated",
-            "thread", "threadName", "processName", "process", "message",
+            "name",
+            "msg",
+            "args",
+            "levelname",
+            "levelno",
+            "pathname",
+            "filename",
+            "module",
+            "exc_info",
+            "exc_text",
+            "stack_info",
+            "lineno",
+            "funcName",
+            "created",
+            "msecs",
+            "relativeCreated",
+            "thread",
+            "threadName",
+            "processName",
+            "process",
+            "message",
             "taskName",
         }
         for key, value in record.__dict__.items():
