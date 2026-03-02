@@ -1,0 +1,27 @@
+# ── Core Framework ─────────────────────────────────────────────────────────
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+pydantic==2.10.3
+pydantic-settings==2.6.1
+
+# ── Database ────────────────────────────────────────────────────────────────
+sqlalchemy==2.0.36
+# Para PostgreSQL (descomente quando usar):
+# psycopg2-binary==2.9.10
+# asyncpg==0.30.0          # driver assíncrono alternativo para PostgreSQL
+
+# ── HTTP Client (Groq integration) ─────────────────────────────────────────
+httpx==0.28.1
+
+# ── Retry / Resiliência ─────────────────────────────────────────────────────
+tenacity==9.0.0
+
+# ── Environment Variables ───────────────────────────────────────────────────
+python-dotenv==1.0.1
+
+# ── Desenvolvimento / Qualidade ─────────────────────────────────────────────
+# pytest==8.3.4
+# pytest-asyncio==0.24.0
+# httpx==0.28.1              # já listado acima (usado em testes de integração)
+# ruff==0.8.4                # linter + formatter
+# mypy==1.13.0               # type checking
