@@ -17,40 +17,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      #  1. Checkout do código
+      # ── 1. Checkout do código ──────────────────────────────────────────────
       - name: 📥 Checkout do repositório
         uses: actions/checkout@v4
 
-      # 2. Configura Python 3.11 
+      # ── 2. Configura Python 3.11 ───────────────────────────────────────────
       - name: 🐍 Setup Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: "pip"
 
-      # 3. Instala dependências 
+      # ── 3. Instala dependências ────────────────────────────────────────────
       - name: 📦 Instalar dependências
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install black flake8 isort bandit
 
-      #  4. Black — verifica formatação 
+      # ── 4. Black — verifica formatação ────────────────────────────────────
       - name: 🎨 Black — Verificar formatação
         run: |
           black --check --diff app/
 
-      #  5. isort — verifica ordem dos imports
+      # ── 5. isort — verifica ordem dos imports ──────────────────────────────
       - name: 📋 isort — Verificar ordem dos imports
         run: |
           isort --check-only --diff app/
 
-      # 6. Flake8 — verifica erros e estilo 
+      # ── 6. Flake8 — verifica erros e estilo ───────────────────────────────
       - name: 🔎 Flake8 — Linter de estilo e erros
         run: |
           flake8 app/
 
-      #  7. Bandit — verifica vulnerabilidades de segurança 
+      # ── 7. Bandit — verifica vulnerabilidades de segurança ─────────────────
       - name: 🔐 Bandit — Segurança do código
         run: |
           bandit -r app/ -ll
