@@ -1,4 +1,3 @@
-
 from functools import lru_cache
 from typing import List
 
@@ -14,10 +13,10 @@ class Settings(BaseSettings):
     )
 
     APP_NAME: str = "Hub Inteligente de Recursos Educacionais"
-    ENVIRONMENT: str = "development"  
+    ENVIRONMENT: str = "development"
     LOG_LEVEL: str = "INFO"
 
-    # Database 
+    # Database
     DATABASE_URL: str = "sqlite:///./hub_educacional.db"
 
     #  Groq
@@ -26,7 +25,7 @@ class Settings(BaseSettings):
     GROQ_MAX_TOKENS: int = 512
     GROQ_TEMPERATURE: float = 0.4
 
-    # CORS 
+    # CORS
     ALLOWED_ORIGINS: List[str] = ["http://localhost:3000", "http://localhost:5173"]
 
     # Paginação
@@ -53,5 +52,6 @@ class Settings(BaseSettings):
 @lru_cache()
 def get_settings() -> Settings:
     return Settings()
+
 
 settings: Settings = get_settings()
