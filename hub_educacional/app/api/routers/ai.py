@@ -1,9 +1,3 @@
-"""
-Router FastAPI para geração de conteúdo via IA (Groq LLM).
-
-Endpoints:
-  POST /ai/generate - Gera descrição e tags para um recurso educacional
-"""
 
 import time
 

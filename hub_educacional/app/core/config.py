@@ -1,7 +1,3 @@
-"""
-Configurações centralizadas da aplicação via variáveis de ambiente.
-Nunca hardcode credenciais — use .env ou variáveis de ambiente reais.
-"""
 
 from functools import lru_cache
 from typing import List
@@ -17,24 +13,23 @@ class Settings(BaseSettings):
         case_sensitive=True,
     )
 
-    # ── App ────────────────────────────────────────────────────────────────
     APP_NAME: str = "Hub Inteligente de Recursos Educacionais"
-    ENVIRONMENT: str = "development"  # development | staging | production
+    ENVIRONMENT: str = "development"  
     LOG_LEVEL: str = "INFO"
 
-    # ── Database ───────────────────────────────────────────────────────────
+    # Database 
     DATABASE_URL: str = "sqlite:///./hub_educacional.db"
 
-    # ── Groq ───────────────────────────────────────────────────────────────
+    #  Groq
     GROQ_API_KEY: str
     GROQ_MODEL: str = "llama3-70b-8192"
     GROQ_MAX_TOKENS: int = 512
     GROQ_TEMPERATURE: float = 0.4
 
-    # ── CORS ───────────────────────────────────────────────────────────────
+    # CORS 
     ALLOWED_ORIGINS: List[str] = ["http://localhost:3000", "http://localhost:5173"]
 
-    # ── Pagination ─────────────────────────────────────────────────────────
+    # Paginação
     DEFAULT_PAGE_SIZE: int = 10
     MAX_PAGE_SIZE: int = 100
 
@@ -57,8 +52,6 @@ class Settings(BaseSettings):
 
 @lru_cache()
 def get_settings() -> Settings:
-    """Retorna instância singleton das configurações (cached)."""
     return Settings()
-
 
 settings: Settings = get_settings()
