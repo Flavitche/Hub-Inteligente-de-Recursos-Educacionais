@@ -18,6 +18,7 @@ from app.db.session import get_db
 logger = get_logger(__name__)
 router = APIRouter()
 
+
 # Schema de resposta pra bater com o que o monitoramento (Prometheus/UptimeRobot) espera
 class HealthResponse(BaseModel):
     status: str

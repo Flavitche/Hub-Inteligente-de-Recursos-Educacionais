@@ -9,6 +9,7 @@ from app.schemas.resource import ResourceCreate, ResourceUpdate
 
 logger = get_logger(__name__)
 
+
 class ResourceService:
     """
     Serviço de CRUD para Recursos Educacionais.
@@ -18,7 +19,7 @@ class ResourceService:
     def __init__(self, db: Session) -> None:
         self._db = db
 
-    #Create
+    # Create
     def create(self, payload: ResourceCreate) -> Resource:
         resource = Resource(
             title=payload.title,
@@ -33,7 +34,7 @@ class ResourceService:
         logger.info("Recurso criado", extra={"resource_id": resource.id, "type": resource.type})
         return resource
 
-    #READ (single)
+    # READ (single)
     def get_by_id(self, resource_id: int) -> Resource:
         stmt = select(Resource).where(Resource.id == resource_id)
         resource = self._db.execute(stmt).scalar_one_or_none()
@@ -101,7 +102,7 @@ class ResourceService:
         )
         return resource
 
-    #Delete
+    # Delete
     def delete(self, resource_id: int) -> None:
         resource = self.get_by_id(resource_id)
         self._db.delete(resource)

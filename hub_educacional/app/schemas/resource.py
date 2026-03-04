@@ -1,16 +1,19 @@
 """
 Schemas Pydantic para validação e serialização de Recursos.
 """
+
 from datetime import datetime
 from enum import Enum
 from typing import Generic, List, Optional, TypeVar
 from pydantic import AnyHttpUrl, BaseModel, ConfigDict, Field, field_validator
+
 
 # Opções fixas pra não aceitarem qualquer texto no tipo de recurso
 class ResourceType(str, Enum):
     VIDEO = "Video"
     PDF = "PDF"
     LINK = "Link"
+
 
 class ResourceBase(BaseModel):
     # Regras básicas: título tem que ter tamanho mínimo e URL tem que ser válida
@@ -43,15 +46,20 @@ class ResourceBase(BaseModel):
     def url_to_string(cls, v) -> str:
         return str(v)
 
+
 # Create
 class ResourceCreate(ResourceBase):
     """Payload de criação: herda tudo da base e exige os campos."""
+
     pass
+
+
 # Update
 class ResourceUpdate(BaseModel):
     """
     Pra atualizar, nada é obrigatório. Só muda o que o usuário mandar.
     """
+
     title: Optional[str] = Field(None, min_length=3, max_length=255)
     description: Optional[str] = Field(None, max_length=5000)
     type: Optional[ResourceType] = None
@@ -76,6 +84,8 @@ class ResourceUpdate(BaseModel):
     @classmethod
     def url_to_string(cls, v) -> Optional[str]:
         return str(v) if v is not None else None
+
+
 class ResourceResponse(ResourceBase):
     """O que a API devolve: inclui os campos que o banco gera sozinho (ID e datas)."""
 
@@ -86,8 +96,10 @@ class ResourceResponse(ResourceBase):
     created_at: datetime
     updated_at: datetime
 
+
 # Paginação
 T = TypeVar("T")
+
 
 # Estrutura padrão pra quando a gente listar vários itens de uma vez
 class PaginatedResponse(BaseModel, Generic[T]):

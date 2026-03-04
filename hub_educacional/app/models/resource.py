@@ -47,25 +47,25 @@ class Resource(Base):
 
     # PK básica com index pra busca ser rápida
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, autoincrement=True)
-    
+
     # String(255) pra não deixar o título ser infinito
     title: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
-    
+
     # Text é melhor que String pra descrição porque cabe muito mais coisa
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
-    
+
     # Aqui eu uso o Enum que a gente criou nos schemas pra limitar o que pode ser salvo
     type: Mapped[str] = mapped_column(
         SAEnum(ResourceType, name="resource_type", native_enum=False),
         nullable=False,
         index=True,
     )
-    
+
     url: Mapped[str] = mapped_column(String(2048), nullable=False)
-    
+
     # Uso minha classe JSONList pra conseguir salvar uma lista no SQLite
     tags: Mapped[List[str]] = mapped_column(JSONList, nullable=False, default=list)
-    
+
     # Datas automáticas: uma fixa o nascimento do registro e a outra atualiza sozinha no 'save'
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

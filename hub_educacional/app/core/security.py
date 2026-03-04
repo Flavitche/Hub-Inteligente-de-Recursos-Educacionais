@@ -1,6 +1,7 @@
 """
 Módulo de segurança da aplicação.
 """
+
 import re
 from app.core.config import settings
 from app.core.logging import get_logger
@@ -13,6 +14,7 @@ _SENSITIVE_PATTERNS = [
     re.compile(r"sk-[a-zA-Z0-9]{40,}"),  # OpenAI API Key
     re.compile(r"Bearer\s+[a-zA-Z0-9\-_.]{20,}"),  # Bearer tokens
 ]
+
 
 def mask_sensitive(text: str) -> str:
     """
@@ -38,7 +40,7 @@ def validate_api_key_safety() -> None:
             "Substitua pela chave real no arquivo .env",
         )
 
-    # Mostro só o comecinho da chave no log pra eu saber que carregou a certa, 
+    # Mostro só o comecinho da chave no log pra eu saber que carregou a certa,
     # mas escondo o resto pra não vazar minha conta
     masked_key = f"{key[:8]}{'*' * (len(key) - 8)}"
     logger.info(

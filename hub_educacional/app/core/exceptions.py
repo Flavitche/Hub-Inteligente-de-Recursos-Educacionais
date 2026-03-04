@@ -2,7 +2,10 @@
 Exceções de domínio da aplicação.
 Centralizar aqui facilita tratamento consistente em toda a API.
 """
+
 from typing import Any, Dict, Optional
+
+
 class AppError(Exception):
     """Base para todas as exceções da aplicação."""
 
@@ -11,6 +14,7 @@ class AppError(Exception):
         super().__init__(message)
         self.message = message
         self.detail = detail or {}
+
 
 class ResourceNotFoundError(AppError):
     """Recurso não encontrado no banco de dados."""
@@ -22,6 +26,7 @@ class ResourceNotFoundError(AppError):
             {"resource_id": resource_id},
         )
 
+
 class GroqAPIError(AppError):
     """Falha na chamada à API Groq."""
 
@@ -29,6 +34,8 @@ class GroqAPIError(AppError):
     def __init__(self, message: str, status_code: Optional[int] = None):
         super().__init__(message, {"groq_status_code": status_code})
 
+
 class InvalidPaginationError(AppError):
     """Parâmetros de paginação inválidos."""
+
     # Se alguém tentar pedir a página -1 ou algo bizarro, a gente joga esse erro aqui

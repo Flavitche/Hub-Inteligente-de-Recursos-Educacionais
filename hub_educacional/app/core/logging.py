@@ -9,6 +9,7 @@ from datetime import datetime, timezone
 
 from app.core.config import settings
 
+
 class StructuredFormatter(logging.Formatter):
     """Formata logs como JSON estruturado."""
 
@@ -22,13 +23,31 @@ class StructuredFormatter(logging.Formatter):
             "message": record.getMessage(),
         }
 
-        # Essa lista serve pra filtrar o que é "sujeira" do Python 
+        # Essa lista serve pra filtrar o que é "sujeira" do Python
         # e pegar só os dados extras que eu realmente passei no log
         standard_attrs = {
-            "name", "msg", "args", "levelname", "levelno", "pathname", "filename",
-            "module", "exc_info", "exc_text", "stack_info", "lineno", "funcName",
-            "created", "msecs", "relativeCreated", "thread", "threadName",
-            "processName", "process", "message", "taskName",
+            "name",
+            "msg",
+            "args",
+            "levelname",
+            "levelno",
+            "pathname",
+            "filename",
+            "module",
+            "exc_info",
+            "exc_text",
+            "stack_info",
+            "lineno",
+            "funcName",
+            "created",
+            "msecs",
+            "relativeCreated",
+            "thread",
+            "threadName",
+            "processName",
+            "process",
+            "message",
+            "taskName",
         }
         for key, value in record.__dict__.items():
             if key not in standard_attrs:
@@ -39,23 +58,25 @@ class StructuredFormatter(logging.Formatter):
             log_entry["exception"] = self.formatException(record.exc_info)
 
         return json.dumps(log_entry, ensure_ascii=False, default=str)
+
+
 class PrettyFormatter(logging.Formatter):
     """Formato legível para desenvolvimento."""
 
     # Cores pra eu bater o olho no terminal e saber logo o que é erro
     COLORS = {
-        "DEBUG": "\033[36m",    # Ciano
-        "INFO": "\033[32m",     # Verde
+        "DEBUG": "\033[36m",  # Ciano
+        "INFO": "\033[32m",  # Verde
         "WARNING": "\033[33m",  # Amarelo
-        "ERROR": "\033[31m",    # Vermelho
-        "CRITICAL": "\033[35m", # Roxo
+        "ERROR": "\033[31m",  # Vermelho
+        "CRITICAL": "\033[35m",  # Roxo
     }
     RESET = "\033[0m"
 
     def format(self, record: logging.LogRecord) -> str:
         color = self.COLORS.get(record.levelname, self.RESET)
         ts = datetime.now(tz=timezone.utc).strftime("%H:%M:%S")
-        
+
         base = (
             f"{color}[{ts}] {record.levelname:<8}{self.RESET} {record.name} | {record.getMessage()}"
         )
@@ -73,10 +94,28 @@ class PrettyFormatter(logging.Formatter):
     def _get_std_attrs(self):
         # Mesma lista de atributos padrão pra não repetir lá em cima
         return {
-            "name", "msg", "args", "levelname", "levelno", "pathname", "filename",
-            "module", "exc_info", "exc_text", "stack_info", "lineno", "funcName",
-            "created", "msecs", "relativeCreated", "thread", "threadName",
-            "processName", "process", "message", "taskName",
+            "name",
+            "msg",
+            "args",
+            "levelname",
+            "levelno",
+            "pathname",
+            "filename",
+            "module",
+            "exc_info",
+            "exc_text",
+            "stack_info",
+            "lineno",
+            "funcName",
+            "created",
+            "msecs",
+            "relativeCreated",
+            "thread",
+            "threadName",
+            "processName",
+            "process",
+            "message",
+            "taskName",
         }
 
 

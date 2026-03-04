@@ -21,9 +21,11 @@ from app.services.resource_service import ResourceService
 
 router = APIRouter()
 
+
 # Injeta a sessão do banco no service pra centralizar a lógica de dados
 def get_resource_service(db: Session = Depends(get_db)) -> ResourceService:
     return ResourceService(db)
+
 
 # Alias pra facilitar o uso do service nos endpoints e ficar mais limpo
 ServiceDep = Annotated[ResourceService, Depends(get_resource_service)]
@@ -37,11 +39,13 @@ def create_resource(payload: ResourceCreate, service: ServiceDep):
 @router.get("/", response_model=PaginatedResponse[ResourceResponse])
 def list_resources(
     service: ServiceDep,
-    page: int = Query(default=1, ge=1), # Validação pra não vir página 0 ou negativa
+    page: int = Query(default=1, ge=1),  # Validação pra não vir página 0 ou negativa
     page_size: int = Query(default=settings.DEFAULT_PAGE_SIZE, ge=1, le=settings.MAX_PAGE_SIZE),
     type: Optional[ResourceType] = Query(default=None),
     tag: Optional[str] = Query(default=None),
-    search: Optional[str] = Query(default=None, min_length=2), # Evita buscas vazias ou curtas demais
+    search: Optional[str] = Query(
+        default=None, min_length=2
+    ),  # Evita buscas vazias ou curtas demais
 ):
     # Separa os itens do total pra montar a paginação correta no front
     items, total = service.list_resources(
@@ -57,6 +61,7 @@ def list_resources(
         page=page,
         page_size=page_size,
     )
+
 
 @router.get("/{resource_id}", response_model=ResourceResponse)
 def get_resource(resource_id: int, service: ServiceDep):

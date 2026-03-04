@@ -37,7 +37,8 @@ if settings.DATABASE_URL.startswith("sqlite"):
         cursor.execute("PRAGMA foreign_keys=ON")
         cursor.close()
 
-# É o "molde" das sessões. O expire_on_commit=False é pra eu conseguir ler o objeto 
+
+# É o "molde" das sessões. O expire_on_commit=False é pra eu conseguir ler o objeto
 # mesmo depois de salvar no banco, sem dar erro de sessão fechada.
 SessionLocal = sessionmaker(
     bind=engine,
@@ -52,15 +53,16 @@ SessionLocal = sessionmaker(
 class Base(DeclarativeBase):
     pass
 
+
 def get_db() -> Generator[Session, None, None]:
     """
     Dependency do FastAPI que provê uma sessão de banco por request.
     """
     db = SessionLocal()
     try:
-        yield db # Entrega a conexão pro endpoint usar
+        yield db  # Entrega a conexão pro endpoint usar
     except Exception:
-        db.rollback() # Se der ruim cancela tudo que ia ser salvo pra não corromper
+        db.rollback()  # Se der ruim cancela tudo que ia ser salvo pra não corromper
         raise
     finally:
-        db.close() # No final de tudo, sempre fecha a porta pra não gastar memória
+        db.close()  # No final de tudo, sempre fecha a porta pra não gastar memória
