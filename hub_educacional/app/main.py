@@ -1,15 +1,8 @@
-"""
-Hub Inteligente de Recursos Educacionais
-Entry point da aplicação FastAPI.
-"""
-
 import time
 from contextlib import asynccontextmanager
-
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-
 from app.api.routers import ai, health, resources
 from app.core.config import settings
 from app.core.logging import get_logger

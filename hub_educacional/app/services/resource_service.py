@@ -1,26 +1,13 @@
-"""
-Service layer para Recursos Educacionais.
-
-Responsabilidades:
-- Lógica de negócio (ex: validações de domínio)
-- Interação com o banco via SQLAlchemy
-- Tratamento de erros de domínio
-- Nunca acessa HTTP diretamente — puro Python/SQLAlchemy
-"""
-
 from datetime import datetime, timezone
 from typing import List, Optional, Tuple
-
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
-
 from app.core.exceptions import ResourceNotFoundError
 from app.core.logging import get_logger
 from app.models.resource import Resource
 from app.schemas.resource import ResourceCreate, ResourceUpdate
 
 logger = get_logger(__name__)
-
 
 class ResourceService:
     """
@@ -31,7 +18,7 @@ class ResourceService:
     def __init__(self, db: Session) -> None:
         self._db = db
 
-    # ── CREATE ─────────────────────────────────────────────────────────────────
+    #Create
     def create(self, payload: ResourceCreate) -> Resource:
         resource = Resource(
             title=payload.title,
@@ -46,7 +33,7 @@ class ResourceService:
         logger.info("Recurso criado", extra={"resource_id": resource.id, "type": resource.type})
         return resource
 
-    # ── READ (single) ──────────────────────────────────────────────────────────
+    #READ (single)
     def get_by_id(self, resource_id: int) -> Resource:
         stmt = select(Resource).where(Resource.id == resource_id)
         resource = self._db.execute(stmt).scalar_one_or_none()
@@ -54,7 +41,7 @@ class ResourceService:
             raise ResourceNotFoundError(resource_id)
         return resource
 
-    # ── READ (list + pagination) ───────────────────────────────────────────────
+    # READ (list + pagination)
     def list_resources(
         self,
         page: int,
@@ -89,7 +76,7 @@ class ResourceService:
 
         return items, total
 
-    # ── UPDATE ─────────────────────────────────────────────────────────────────
+    # Update
     def update(self, resource_id: int, payload: ResourceUpdate) -> Resource:
         resource = self.get_by_id(resource_id)
 
@@ -114,7 +101,7 @@ class ResourceService:
         )
         return resource
 
-    # ── DELETE ─────────────────────────────────────────────────────────────────
+    #Delete
     def delete(self, resource_id: int) -> None:
         resource = self.get_by_id(resource_id)
         self._db.delete(resource)

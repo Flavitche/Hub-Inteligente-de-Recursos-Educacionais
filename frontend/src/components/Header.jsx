@@ -1,9 +1,12 @@
 import './Header.css'
 
+// O componente recebe funções (callbacks) e uma condição (boolean) via props
 export default function Header({ onNew, showBack, onBack }) {
   return (
     <header className="header">
       <div className="header-inner">
+        
+        {/* Seção da Logo e Título do Hub */}
         <div className="header-brand">
           <div className="header-logo">
             <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
@@ -18,9 +21,11 @@ export default function Header({ onNew, showBack, onBack }) {
           </div>
         </div>
 
+        {/* Lógica Condicional: Se 'showBack' for true, mostra "Voltar", senão mostra "Novo Recurso" */}
         <div className="header-actions">
           {showBack ? (
             <button className="btn btn-ghost" onClick={onBack}>
+              {/* Ícone de Seta para Esquerda */}
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
@@ -28,6 +33,7 @@ export default function Header({ onNew, showBack, onBack }) {
             </button>
           ) : (
             <button className="btn btn-primary" onClick={onNew}>
+              {/* Ícone de Plus (+) para Criar */}
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path d="M8 3V13M3 8H13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
               </svg>
@@ -35,6 +41,7 @@ export default function Header({ onNew, showBack, onBack }) {
             </button>
           )}
         </div>
+
       </div>
     </header>
   )

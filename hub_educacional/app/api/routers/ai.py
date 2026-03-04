@@ -7,6 +7,7 @@ from app.core.logging import get_logger
 from app.schemas.ai import AIGenerateRequest, AIGenerateResponse
 from app.services.ai_service import GroqAIService, get_groq_service
 
+# Configuração do log e do roteador do FastAPI
 logger = get_logger(__name__)
 router = APIRouter()
 
@@ -26,6 +27,7 @@ async def generate_ai_content(
     service: GroqAIService = Depends(get_groq_service),
 ) -> AIGenerateResponse:
 
+    # Timer pra gente medir a latência da API do Groq
     start_time = time.perf_counter()
 
     logger.info(
@@ -34,9 +36,11 @@ async def generate_ai_content(
     )
 
     try:
+        # Chama o service que faz a mágica com o LLM
         ai_response, metrics = await service.generate_description_and_tags(payload)
 
     except GroqAPIError as exc:
+        # Erro específico da API (ex: timeout, quota, chave inválida)
         latency_s = round((time.perf_counter() - start_time), 2)
         logger.error(
             f'AI Request falhou: Title="{payload.title}", '
@@ -54,6 +58,7 @@ async def generate_ai_content(
         )
 
     except Exception:
+        # Catch-all para qualquer erro estranho que eu n previ
         logger.exception(
             f'AI Request erro inesperado: Title="{payload.title}"',
             extra={"title": payload.title, "type": payload.type.value},
@@ -63,6 +68,7 @@ async def generate_ai_content(
             detail="Erro interno ao processar requisição de IA",
         )
 
+    # Log de sucesso com as métricas de tokens e tempo (é bom pra monitorar custo)
     logger.info(
         f'AI Request concluído: Title="{payload.title}", '
         f"TokenUsage={metrics.total_tokens}, "

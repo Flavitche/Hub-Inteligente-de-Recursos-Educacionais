@@ -13,58 +13,54 @@ from app.core.logging import get_logger
 
 logger = get_logger(__name__)
 
-# ── Engine ─────────────────────────────────────────────────────────────────────
 connect_args: dict = {}
 if settings.DATABASE_URL.startswith("sqlite"):
-    # SQLite precisa de check_same_thread=False para uso com FastAPI (threads múltiplas)
+    # O SQLite por padrão não gosta de várias pessoas mexendo ao mesmo tempo,
+    # essa linha libera isso pra o FastAPI não travar.
     connect_args["check_same_thread"] = False
 
 engine = create_engine(
     settings.DATABASE_URL,
     connect_args=connect_args,
-    echo=False,  # True para debug de queries SQL
-    pool_pre_ping=True,  # Verifica conexão antes de usar (evita stale connections)
-    # Para PostgreSQL em produção, adicione:
-    # pool_size=10,
-    # max_overflow=20,
+    echo=False,  # Se eu quiser ver o SQL puro que o Python cria, mudo pra True
+    pool_pre_ping=True,  # Dá uma "cutucada" na conexão antes de usar pra ver se tá viva
 )
 
-# ── SQLite WAL mode para melhor concorrência ───────────────────────────────────
 if settings.DATABASE_URL.startswith("sqlite"):
 
     @event.listens_for(engine, "connect")
     def set_sqlite_pragma(dbapi_connection, connection_record):
         cursor = dbapi_connection.cursor()
+        # WAL deixa o banco mais rápido pra ler e escrever ao mesmo tempo
         cursor.execute("PRAGMA journal_mode=WAL")
+        # Garante que se eu deletar algo, as chaves estrangeiras funcionem (não fique lixo no banco)
         cursor.execute("PRAGMA foreign_keys=ON")
         cursor.close()
 
-
-# ── Session Factory ────────────────────────────────────────────────────────────
+# É o "molde" das sessões. O expire_on_commit=False é pra eu conseguir ler o objeto 
+# mesmo depois de salvar no banco, sem dar erro de sessão fechada.
 SessionLocal = sessionmaker(
     bind=engine,
     autocommit=False,
     autoflush=False,
-    expire_on_commit=False,  # Evita lazy-loading após commit
+    expire_on_commit=False,
 )
 
 
 # ── Base Declarativa ───────────────────────────────────────────────────────────
+# Todo Model (tabela) que eu criar vai herdar dessa classe aqui
 class Base(DeclarativeBase):
     pass
 
-
-# ── Dependency Injection ───────────────────────────────────────────────────────
 def get_db() -> Generator[Session, None, None]:
     """
     Dependency do FastAPI que provê uma sessão de banco por request.
-    A sessão é fechada automaticamente ao término da requisição.
     """
     db = SessionLocal()
     try:
-        yield db
+        yield db # Entrega a conexão pro endpoint usar
     except Exception:
-        db.rollback()
+        db.rollback() # Se der ruim cancela tudo que ia ser salvo pra não corromper
         raise
     finally:
-        db.close()
+        db.close() # No final de tudo, sempre fecha a porta pra não gastar memória

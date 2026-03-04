@@ -3,6 +3,7 @@ import { useResources, useResourceMutation } from '../hooks/useResources'
 import ResourceCard from '../components/ResourceCard'
 import Pagination from '../components/Pagination'
 import Toast from '../components/Toast'
+import ConfirmModal from '../components/ConfirmModal'
 import './ResourceList.css'
 
 const TYPES = ['', 'Video', 'PDF', 'Link']
@@ -11,10 +12,11 @@ export default function ResourceList({ onEdit, onNew }) {
   const { data, loading, error, fetchResources } = useResources()
   const { deleteResource }                        = useResourceMutation()
 
-  const [page, setPage]         = useState(1)
-  const [search, setSearch]     = useState('')
-  const [typeFilter, setType]   = useState('')
-  const [toast, setToast]       = useState(null)
+  const [page, setPage]               = useState(1)
+  const [search, setSearch]           = useState('')
+  const [typeFilter, setType]         = useState('')
+  const [toast, setToast]             = useState(null)
+  const [confirmId, setConfirmId]     = useState(null) // id do recurso a excluir
 
   const load = useCallback(() => {
     const params = { page, page_size: 9 }
@@ -25,7 +27,6 @@ export default function ResourceList({ onEdit, onNew }) {
 
   useEffect(() => { load() }, [load])
 
-  // Debounce search
   useEffect(() => {
     if (search.length === 0 || search.length >= 2) {
       const t = setTimeout(() => { setPage(1); load() }, 400)
@@ -33,14 +34,19 @@ export default function ResourceList({ onEdit, onNew }) {
     }
   }, [search])
 
-  const handleDelete = async (id) => {
-    if (!confirm('Tem certeza que deseja excluir este recurso?')) return
+  const handleDeleteClick = (id) => {
+    setConfirmId(id) // abre o modal
+  }
+
+  const handleDeleteConfirm = async () => {
     try {
-      await deleteResource(id)
+      await deleteResource(confirmId)
       setToast({ message: 'Recurso excluído com sucesso!', type: 'success' })
       load()
     } catch (err) {
       setToast({ message: err.message, type: 'error' })
+    } finally {
+      setConfirmId(null) // fecha o modal
     }
   }
 
@@ -51,7 +57,7 @@ export default function ResourceList({ onEdit, onNew }) {
 
   return (
     <div className="list-page">
-      {/* ── Header ── */}
+      {/* Header */}
       <div className="list-header">
         <div>
           <h1 className="list-title">Recursos Educacionais</h1>
@@ -67,7 +73,7 @@ export default function ResourceList({ onEdit, onNew }) {
         </button>
       </div>
 
-      {/* ── Filters ── */}
+      {/* Filtros */}
       <div className="list-filters">
         <div className="search-wrap">
           <svg className="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -98,8 +104,6 @@ export default function ResourceList({ onEdit, onNew }) {
           ))}
         </div>
       </div>
-
-      {/* ── Content ── */}
       {loading && (
         <div className="list-skeleton">
           {[...Array(6)].map((_, i) => (
@@ -133,7 +137,7 @@ export default function ResourceList({ onEdit, onNew }) {
                 key={r.id}
                 resource={r}
                 onEdit={onEdit}
-                onDelete={handleDelete}
+                onDelete={handleDeleteClick}
                 style={{ animationDelay: `${i * 0.04}s` }}
               />
             ))}
@@ -144,6 +148,16 @@ export default function ResourceList({ onEdit, onNew }) {
             onChange={setPage}
           />
         </>
+      )}
+
+      {/*Modal de confirmação*/}
+      {confirmId && (
+        <ConfirmModal
+          title="Excluir recurso"
+          message="Tem certeza que quer excluir este recurso? Essa ação não pode ser desfeita."
+          onConfirm={handleDeleteConfirm}
+          onCancel={() => setConfirmId(null)}
+        />
       )}
 
       {toast && (
