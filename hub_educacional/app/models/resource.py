@@ -6,6 +6,7 @@ Usa JSON nativo para o campo tags (compatível com SQLite e PostgreSQL).
 import json
 from datetime import datetime, timezone
 from typing import List
+
 from sqlalchemy import DateTime
 from sqlalchemy import Enum as SAEnum
 from sqlalchemy import Integer, String, Text, TypeDecorator

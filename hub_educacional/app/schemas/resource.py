@@ -5,6 +5,7 @@ Schemas Pydantic para validação e serialização de Recursos.
 from datetime import datetime
 from enum import Enum
 from typing import Generic, List, Optional, TypeVar
+
 from pydantic import AnyHttpUrl, BaseModel, ConfigDict, Field, field_validator
 
 

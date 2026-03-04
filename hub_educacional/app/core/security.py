@@ -3,6 +3,7 @@ Módulo de segurança da aplicação.
 """
 
 import re
+
 from app.core.config import settings
 from app.core.logging import get_logger
 

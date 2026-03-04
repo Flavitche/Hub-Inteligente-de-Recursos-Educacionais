@@ -3,7 +3,9 @@ Schemas Pydantic para o endpoint de geração inteligente via IA.
 """
 
 from typing import List
+
 from pydantic import BaseModel, Field
+
 from app.schemas.resource import ResourceType
 
 

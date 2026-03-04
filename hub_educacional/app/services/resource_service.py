@@ -1,7 +1,9 @@
 from datetime import datetime, timezone
 from typing import List, Optional, Tuple
+
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
+
 from app.core.exceptions import ResourceNotFoundError
 from app.core.logging import get_logger
 from app.models.resource import Resource
